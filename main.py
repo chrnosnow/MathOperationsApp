@@ -16,3 +16,8 @@ async def lifespan(app):
 
 # Create FastAPI application instance with lifespan handler
 app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}

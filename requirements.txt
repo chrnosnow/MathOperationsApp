@@ -1,9 +1,13 @@
-db.py
+#db.py
 
-python -m pip install sqlmodel
+#python -m pip install
+sqlmodel
 
 
-main.py
-python -m pip install fastapi
-python -m pip install uvicorn
+#main.py
+fastapi
+uvicorn
 
+flake8
+
+# httpx
