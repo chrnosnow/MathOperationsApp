@@ -18,4 +18,4 @@ venv/
 Thumbs.db
 
 #database
-.requests.db
+requests.db
