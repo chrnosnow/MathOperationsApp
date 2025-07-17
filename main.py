@@ -1,4 +1,3 @@
-# python
 from fastapi import FastAPI
 from db import create_db_and_tables
 from contextlib import asynccontextmanager
@@ -16,3 +15,8 @@ async def lifespan(app):
 
 # Create FastAPI application instance with lifespan handler
 app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}

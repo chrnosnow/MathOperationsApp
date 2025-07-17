@@ -1,4 +1,3 @@
-# python
 from sqlmodel import SQLModel, create_engine, Session
 
 # Database connection URL (using SQLite)
