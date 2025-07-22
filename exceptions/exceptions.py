@@ -4,13 +4,13 @@ Domain-level exception hierarchy.
 Convert these to HTTP errors in the API layer.
 """
 
-class MathServiceError(Exception):
+class MathServiceErr(Exception):
     """Base class for math-service exceptions."""
 
 
-class InvalidInputError(MathServiceError, ValueError):
+class InvalidInputErr(MathServiceErr, ValueError):
     """Raised when the caller supplies an invalid argument."""
 
 
-class OverflowError(MathServiceError):
+class OverflowErr(MathServiceErr):
     """Raised when the result would overflow practical limits."""
