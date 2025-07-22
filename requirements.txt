@@ -1,0 +1,15 @@
+#db.py
+
+#python -m pip install
+sqlmodel
+
+
+#main.py
+fastapi
+uvicorn
+
+flake8
+
+pytest
+
+# httpx
