@@ -2,6 +2,9 @@ from fastapi.testclient import TestClient
 from main import app
 from datetime import datetime
 
+#install pytest
+#use python -m pytest to see the tests
+
 # def test_read_root():
     # client = TestClient(app)
     # response = client.get("/")
