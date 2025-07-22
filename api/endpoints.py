@@ -13,7 +13,7 @@ def read_root():
 # Creates a new log entry. Expects a RequestLogCreate payload.
 @router.post("/logs/", response_model=RequestLog)
 def create_log(log: RequestLogCreate, session: Session = Depends(get_session)):
-    db_log = RequestLog(**log.dict())
+    db_log = RequestLog(**log.model_dump())
     session.add(db_log)
     session.commit()
     session.refresh(db_log)

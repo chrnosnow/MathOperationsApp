@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from main import app
-from datetime import datetime
+from datetime import datetime, timezone
 
 #install pytest
 #use python -m pytest to see the tests
@@ -24,7 +24,7 @@ def test_create_log():
         "operation": "test_op",
         "parameters": "param1,param2",
         "result": "success",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     response = client.post("/logs/", json=log_data)
     assert response.status_code == 200
@@ -48,7 +48,7 @@ def test_update_log():
         "operation": "update_op",
         "parameters": "p1",
         "result": "ok",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     create_resp = client.post("/logs/", json=log_data)
     log_id = create_resp.json()["id"]
@@ -58,7 +58,7 @@ def test_update_log():
         "operation": "updated_op",
         "parameters": "p2",
         "result": "updated",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     response = client.put(f"/logs/{log_id}", json=update_data)
     assert response.status_code == 200
@@ -70,7 +70,7 @@ def test_delete_log():
         "operation": "delete_op",
         "parameters": "p1",
         "result": "ok",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     create_resp = client.post("/logs/", json=log_data)
     log_id = create_resp.json()["id"]
