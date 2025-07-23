@@ -22,10 +22,6 @@ def pow_int(base: int, exponent: int) -> int:
     The call is cached so repeated identical requests are served from an
     in-memory dictionary.
     """
-
-    if base < 0 or exponent < 0:
-        raise InvalidInputErr("Negative integers are not supported.")
-
     result: int = 1
     b: int = base
     e: int = exponent
@@ -47,6 +43,10 @@ def fibonacci_n(n: int) -> int:
     Fast doubling method (O(log n)).  Much faster than naïve recursion.
 
     Returns Fₙ where F₀ = 0, F₁ = 1.
+    Raises
+    ------
+    InvalidInputErr  – if n < 0
+    OverflowErr    – if Fₙ would exceed service limits
     """
 
     if n < 0:
@@ -55,6 +55,7 @@ def fibonacci_n(n: int) -> int:
     def _fib(k: int) -> tuple[int, int]:
         if k == 0:
             return 0, 1
+
         a, b = _fib(k >> 1)
         c = a * ((b << 1) - a)          # c = F(m) * (2*F(m+1) - F(m)) = F(2m)
         d = a * a + b * b               # d = F(m)^2 + F(m+1)^2        = F(2m+1)
