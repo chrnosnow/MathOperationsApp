@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+
+from api.math import math_router
 from db import create_db_and_tables
-from api.endpoints import router
+from api.admin_logs import admin_router
 import logging
 import uvicorn
 
@@ -32,7 +34,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # Register all API endpoints with the app
-app.include_router(router)
+app.include_router(admin_router)    # admin-only endpoints
+app.include_router(math_router)     # user endpoints
 
 
 if __name__ == "__main__":

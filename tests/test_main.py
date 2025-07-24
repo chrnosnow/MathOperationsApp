@@ -294,3 +294,14 @@ async def test_fibonacci_schema_violations(payload):
         assert response.status_code == 422
         # FastAPI validation errors are a list under "detail"
         assert isinstance(response.json().get("detail"), list)
+
+
+# --------------- TESTS FOR USER PRIVILEGES ---------------
+
+async def test_non_admin_cannot_create_log(client, token_user):
+    r = await client.post(
+        "/logs/",
+        headers={"Authorization": f"Bearer {token_user}"},
+        json={"operation":"fib","parameters":"n=3","result":"2"}
+    )
+    assert r.status_code == 403
