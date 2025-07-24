@@ -4,6 +4,7 @@ Domain-level exception hierarchy.
 Convert these to HTTP errors in the API layer.
 """
 
+
 class MathServiceErr(Exception):
     """Base class for math-service exceptions."""
 
