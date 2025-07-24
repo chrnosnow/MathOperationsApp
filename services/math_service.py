@@ -8,7 +8,8 @@ from typing import Final
 from exceptions.exceptions import InvalidInputErr, OverflowErr
 
 # A very relaxed overflow limit so that we fail gracefully instead of
-# freezing the process. Needs to be adjusted for specific deployment constraints.
+# freezing the process. Needs to be adjusted for
+# specific deployment constraints.
 MAX_ABSOLUTE_VALUE: Final[int] = 10**12
 
 
@@ -58,7 +59,7 @@ def fibonacci_n(n: int) -> int:
 
         a, b = _fib(k >> 1)
         c = a * ((b << 1) - a)          # c = F(m) * (2*F(m+1) - F(m)) = F(2m)
-        d = a * a + b * b               # d = F(m)^2 + F(m+1)^2        = F(2m+1)
+        d = a * a + b * b               # d = F(m)^2 + F(m+1)^2 = F(2m+1)
         return (c, d) if k & 1 == 0 else (d, c + d)
 
     value = _fib(n)[0]
