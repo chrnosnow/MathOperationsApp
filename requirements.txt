@@ -5,12 +5,19 @@ sqlmodel~=0.0.24
 #main.py
 fastapi~=0.116.1
 uvicorn~=0.35.0
-flake8~=7.3.0
 
-# user
+# Code-quality tools
+pre-commit>=3.7
+black>=24.4
+isort>=5.13
+ruff>=0.4
+flake8>=7.0
+
+# user/auth
 python-dotenv~=1.0
 python-jose[cryptography]~=3.3
 passlib[bcrypt]~=1.7
+python-multipart
 
 # test
 pytest~=8.4.1

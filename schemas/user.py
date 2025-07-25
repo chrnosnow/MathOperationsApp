@@ -1,5 +1,7 @@
-from pydantic import BaseModel, constr
 from typing import List
+
+from pydantic import BaseModel, constr
+
 
 class RoleRead(BaseModel):
     id: int
@@ -8,9 +10,11 @@ class RoleRead(BaseModel):
     class Config:
         orm_mode = True
 
+
 class UserCreate(BaseModel):
     username: constr(min_length=3, max_length=50)
     password: constr(min_length=6, max_length=100)
+
 
 class UserRead(BaseModel):
     id: int
@@ -20,6 +24,7 @@ class UserRead(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class TokenResponse(BaseModel):
     access_token: str

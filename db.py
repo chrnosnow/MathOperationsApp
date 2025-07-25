@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from sqlmodel import SQLModel, create_engine, Session
+from sqlmodel import Session, SQLModel, create_engine
 
 # Database connection URL (using SQLite)
 BASE_DIR = Path(__file__).resolve().parent

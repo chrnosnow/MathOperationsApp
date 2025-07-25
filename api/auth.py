@@ -1,21 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, status, Security
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-from sqlmodel import Session, select
-from db import get_session
-from core.security import hash_password, verify_password, create_access_token, decode_access_token
-from models.users import User, Role
-from schemas.user import UserCreate, UserRead, TokenResponse
 from typing import Optional
 
+from fastapi import APIRouter, Depends, HTTPException, Security, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlmodel import Session, select
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+from core.security import (
+    create_access_token,
+    decode_access_token,
+    hash_password,
+    verify_password,
+)
+from db import get_session
+from models.users import Role, User
+from schemas.user import TokenResponse, UserCreate, UserRead
+
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 # ------------- Helpers -----------------------------------------
 
+
 def _get_user_by_username(session: Session, username: str) -> Optional[User]:
     return session.exec(select(User).where(User.username == username)).first()
+
 
 def _get_role(session: Session, name: str) -> Role:
     role = session.exec(select(Role).where(Role.name == name)).first()
@@ -26,12 +34,17 @@ def _get_role(session: Session, name: str) -> Role:
         session.refresh(role)
     return role
 
+
 # ------------- Endpoints -----------------------------------------
-@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+@auth_router.post(
+    "/register", response_model=UserRead, status_code=status.HTTP_201_CREATED
+)
 def register(user_in: UserCreate, session: Session = Depends(get_session)):
     if _get_user_by_username(session, user_in.username):
         raise HTTPException(status_code=400, detail="Username already taken")
-    user = User(username=user_in.username, hashed_password=hash_password(user_in.password))
+    user = User(
+        username=user_in.username, hashed_password=hash_password(user_in.password)
+    )
 
     # Give every new user a default "user" role
     default_role = _get_role(session, "user")
@@ -42,8 +55,12 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
     session.refresh(user)
     return user
 
-@router.post("/login", response_model=TokenResponse)
-def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+
+@auth_router.post("/login", response_model=TokenResponse)
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: Session = Depends(get_session),
+):
     user = _get_user_by_username(session, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -53,7 +70,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
 
 # ------------- Dependencies -----------------------------------------
 
-async def get_current_user(token: str = Security(oauth2_scheme), session: Session = Depends(get_session)) -> User:
+
+async def get_current_user(
+    token: str = Security(oauth2_scheme), session: Session = Depends(get_session)
+) -> User:
     try:
         payload = decode_access_token(token)
         user_id = int(payload.get("sub"))
@@ -62,15 +82,17 @@ async def get_current_user(token: str = Security(oauth2_scheme), session: Sessio
     user = session.get(User, user_id)
     if not user or not user.is_active:
         raise HTTPException(status_code=401, detail="Inactive user")
-    return user     # Expected type 'User', got 'type[User] | None' instead
+    return user  # Expected type 'User', got 'type[User] | None' instead
+
 
 # Admin‑role guard
 def require_role(role_name: str):
     def _guard(current_user: User = Depends(get_current_user)) -> User:
         if role_name not in {role.name for role in current_user.roles}:
-            raise HTTPException(status_code=403, detail=f"Requires role: {role_name}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Requires role: {role_name}",
+            )
         return current_user
-    return _guard
 
-# A ready-made guard for reuse in routes
-# require_admin = require_role("admin")
+    return _guard

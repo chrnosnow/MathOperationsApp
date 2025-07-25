@@ -1,6 +1,7 @@
 """
 Business-logic layer for all math operations.
 """
+
 import math
 from functools import lru_cache
 from typing import Final
@@ -58,8 +59,8 @@ def fibonacci_n(n: int) -> int:
             return 0, 1
 
         a, b = _fib(k >> 1)
-        c = a * ((b << 1) - a)          # c = F(m) * (2*F(m+1) - F(m)) = F(2m)
-        d = a * a + b * b               # d = F(m)^2 + F(m+1)^2 = F(2m+1)
+        c = a * ((b << 1) - a)  # c = F(m) * (2*F(m+1) - F(m)) = F(2m)
+        d = a * a + b * b  # d = F(m)^2 + F(m+1)^2 = F(2m+1)
         return (c, d) if k & 1 == 0 else (d, c + d)
 
     value = _fib(n)[0]

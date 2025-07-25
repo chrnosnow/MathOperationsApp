@@ -6,20 +6,20 @@ Central place for FastAPI `Depends` callables:
 * Current-user loader (`get_current_user`)
 * Role guards (`require_role`, `require_admin`)
 """
-from datetime import datetime, timezone
-from typing import Generator
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from sqlmodel import Session, select
+from sqlmodel import Session
 
-from db import get_session                          # re-export DB session factory
-from models.users import User                       # SQLModel table for users
-from core.security import SECRET_KEY, ALGORITHM     # JWT settings
+from core.security import ALGORITHM, SECRET_KEY  # JWT settings
+from db import get_session  # re-export DB session factory
+from models.users import User  # SQLModel table for users
 
 # ---------------- OAuth2 bearer-token scheme ---------------------------------
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")  # where clients POST credentials
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="auth/login"
+)  # where clients POST credentials
 
 
 # ---------------- Current-user dependency ---------------------------------
