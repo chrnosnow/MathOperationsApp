@@ -1,0 +1,25 @@
+repos:
+  # ------- Auto-formatter ----------------------------------------
+  - repo: https://github.com/psf/black
+    rev: 24.4.2            # pin exact version
+    hooks:
+      [ { id: black } ]
+
+  # ------- Import sorter -----------------------------------------
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      [ { id: isort } ]
+
+  # ------- Ruff (lint + autofix) ---------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix]       # auto-apply safe fixes
+
+  # ------- Flake8 (final gate) -----------------------------------
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8

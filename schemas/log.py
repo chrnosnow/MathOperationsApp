@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from sqlmodel import SQLModel, Field
-from pydantic import BaseModel
 from datetime import datetime, timezone
+
+from pydantic import BaseModel
+from sqlmodel import Field, SQLModel
 
 
 class RequestLogCreate(BaseModel):
