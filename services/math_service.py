@@ -14,23 +14,39 @@ from exceptions.exceptions import InvalidInputErr, OverflowErr
 # specific deployment constraints.
 MAX_ABSOLUTE_VALUE: Final[int] = 10**12
 
+
 def track_calls(operation_name):
+    # A decorator that wraps a math function to:
+    # - Apply LRU caching (memoization)
+    # - Track Prometheus metrics for calls
+    # - Label each call as 'cache' or 'compute'
+
     def decorator(func):
+        # Apply LRU caching with a max of 256 entries
         cached_func = lru_cache(maxsize=256)(func)
 
         @wraps(cached_func)
         def wrapper(*args, **kwargs):
-            # Check if in cache
+            # Snapshot the cache stats before call
             cache_info = cached_func.cache_info()
+
+            # Call the cached function
             result = cached_func(*args, **kwargs)
+
+            # Snapshot the cache stats after call
             after_info = cached_func.cache_info()
 
+            # Determine if this call was a cache hit or miss
             source = "compute" if after_info.misses > cache_info.misses else "cache"
+
+            # Increment the Prometheus counter with labels
             math_calls_total.labels(operation=operation_name, source=source).inc()
+
             return result
 
         return wrapper
     return decorator
+
 
 # ───────────────────────── power ──────────────────────────────────────────
 @lru_cache(maxsize=256)

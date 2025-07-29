@@ -43,11 +43,12 @@ async def lifespan(app: FastAPI):
 # Create FastAPI app with lifespan for setup and teardown
 app = FastAPI(lifespan=lifespan)
 
+
 # Register all API endpoints with the app
 app.include_router(auth_router)  # authentication endpoints
 app.include_router(admin_router)  # admin-only endpoints
 app.include_router(math_router)  # user endpoints
-app.include_router(metrics_router) # metrics endpoint
+app.include_router(metrics_router)  # metrics endpoint
 
 
 if __name__ == "__main__":
