@@ -1,4 +1,4 @@
-"""Password hashing & JWT helpers – secrets come from a .env file."""
+"""Password hashing & JWT helpers – secrets come from a ...env file."""
 
 import os
 from datetime import datetime, timedelta, timezone

@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 5s  # Prometheus shall sip metrics every 5 seconds
+
+scrape_configs:
+  - job_name: "math-api"
+    static_configs:
+      - targets: ["host.docker.internal:8080"]  # Use "localhost:8080" if not inside Docker

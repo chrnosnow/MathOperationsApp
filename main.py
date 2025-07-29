@@ -9,6 +9,7 @@ from api.auth import auth_router
 from api.math import math_router
 from core.startup_seed import seed_admin
 from db import create_db_and_tables
+from metrics.metrics import metrics_router
 
 # test for database connection and creation
 # to run use python -m uvicorn main:app --reload --port 8080
@@ -45,6 +46,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(auth_router)  # authentication endpoints
 app.include_router(admin_router)  # admin-only endpoints
 app.include_router(math_router)  # user endpoints
+app.include_router(metrics_router) # metrics endpoint
 
 
 if __name__ == "__main__":

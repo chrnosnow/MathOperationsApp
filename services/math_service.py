@@ -3,8 +3,9 @@ Business-logic layer for all math operations.
 """
 
 import math
-from functools import lru_cache
+from functools import lru_cache, wraps
 from typing import Final
+from metrics.metrics import math_calls_total
 
 from exceptions.exceptions import InvalidInputErr, OverflowErr
 
@@ -13,9 +14,27 @@ from exceptions.exceptions import InvalidInputErr, OverflowErr
 # specific deployment constraints.
 MAX_ABSOLUTE_VALUE: Final[int] = 10**12
 
+def track_calls(operation_name):
+    def decorator(func):
+        cached_func = lru_cache(maxsize=256)(func)
+
+        @wraps(cached_func)
+        def wrapper(*args, **kwargs):
+            # Check if in cache
+            cache_info = cached_func.cache_info()
+            result = cached_func(*args, **kwargs)
+            after_info = cached_func.cache_info()
+
+            source = "compute" if after_info.misses > cache_info.misses else "cache"
+            math_calls_total.labels(operation=operation_name, source=source).inc()
+            return result
+
+        return wrapper
+    return decorator
 
 # ───────────────────────── power ──────────────────────────────────────────
 @lru_cache(maxsize=256)
+@track_calls("pow_int")
 def pow_int(base: int, exponent: int) -> int:
     """
     Integer exponentiation using exponentiation by squaring
@@ -40,6 +59,7 @@ def pow_int(base: int, exponent: int) -> int:
 
 # ───────────────────────── fibonacci ──────────────────────────────────────
 @lru_cache(maxsize=1024)
+@track_calls("fibonacci")
 def fibonacci_n(n: int) -> int:
     """
     Fast doubling method (O(log n)).  Much faster than naïve recursion.
@@ -70,6 +90,7 @@ def fibonacci_n(n: int) -> int:
 
 # ───────────────────────── factorial ──────────────────────────────────────
 @lru_cache(maxsize=512)
+@track_calls("factorial")
 def factorial(n: int) -> int:
     """
     Compute n! using Python’s built-in math.factorial (fast C code),

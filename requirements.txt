@@ -24,7 +24,9 @@ python-multipart
 pytest~=8.4.1
 pytest-asyncio
 
-
+# metrics
+prometheus_fastapi_instrumentator~=6.1.0
+prometheus_client
 
 # httpx
 h11~=0.16.0
