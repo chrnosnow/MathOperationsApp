@@ -20,6 +20,20 @@ speed, built-in validation, and ready-made documentation with almost no boilerpl
 
 ---
 
+## 📈 Prometheus
+
+Prometheus is an open-source metrics monitoring and alerting toolkit that scrapes time-series data from configured targets (like this app’s /metrics endpoint) and stores it for querying, alerting, and dashboarding.
+You may also add custom metrics (e.g., math_calls_total) to track specific function calls, sources (cache vs compute), or errors.
+To query Prometheus se expressions like up, http_requests_total, math_calls_total.
+
+___
+
+## Live Prometheus API Explorer
+
+![Prometheus UI overview](docs/images/prometheus-ui.png)
+
+---
+
 ## ✨ Features
 
 * **LRU-cached math functions** → logarithmic power, fast-doubling Fibonacci, C-backed factorial.
@@ -43,7 +57,8 @@ python -m venv .venv && .\.venv\Scripts\Activate
 pip install -r requirements.txt -r requirements-dev.txt
 pytest -q                        # optional: run tests
 uvicorn main:app --reload --port 8080
-# open http://localhost:8080/docs
+# open http://localhost:8080/docs for fastapi
+# open http://localhost:9090/ for prometheus
 ```
 
 SQLite file requests.db is created in the project root; it’s already .gitignored.
@@ -57,8 +72,8 @@ you can build and run it with the following commands:
 
 ```bash
 bash
-docker build -t math-api .
-docker run -e SECRET_KEY="$(openssl rand -hex 32)" -p 8080:8080 math-api
+docker-compose down -v : Stops and removes all services, including volumes (e.g., metrics or DB data).
+docker-compose up --build : Builds and starts all services defined in the docker-compose.yml.
 ```
 
 Or use Rancher Desktop / Kubernetes with the provided k8s/ manifests (Deployment, Service, Secret).

@@ -32,6 +32,7 @@ async def lifespan(app: FastAPI):
             logger.info("Default admin user/role created (user: admin / admin1234)")
         else:
             logger.info("Admin user and role already present; no changes made.")
+        logger.info("Prometheus metrics available at http://localhost:9090")
     except Exception as e:
         logger.exception("Error creating database tables.")
         raise e

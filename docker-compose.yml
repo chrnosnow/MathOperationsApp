@@ -4,6 +4,10 @@ services:
   fastapi:
     build: .
     container_name: math-api
+    volumes:
+      - ./requests.db:/app/requests.db
+    depends_on:
+      - prometheus
     ports:
       - "8080:8080"
     networks:
