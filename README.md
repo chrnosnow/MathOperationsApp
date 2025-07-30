@@ -16,7 +16,7 @@ speed, built-in validation, and ready-made documentation with almost no boilerpl
 
 ## Live FastAPI API Explorer
 
-![Swagger UI overview](docs/images/swagger-ui.png)
+![Swagger UI overview](docs/images/swagger-ui.jpeg)
 
 ---
 
