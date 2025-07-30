@@ -5,11 +5,32 @@ from db import get_session
 from deps import require_admin
 from schemas.log import RequestLog, RequestLogCreate
 
+from services.math_service import pow_int, fibonacci_n, factorial
+
 # Apply dependency at router-level because all log routes are admin-only
 admin_router = APIRouter(
     prefix="/logs", tags=["logs"], dependencies=[Depends(require_admin)]
 )
 
+# ──────────────────────── CACHE INSPECTION ENDPOINTS ─────────────────────────
+
+# View current cache stats for each math function
+@admin_router.get("/cache")
+def cache_insight():
+    return {
+        "pow_int": pow_int.cache_info()._asdict(),
+        "fibonacci_n": fibonacci_n.cache_info()._asdict(),
+        "factorial": factorial.cache_info()._asdict()
+    }
+
+
+# Clear all math function caches
+@admin_router.post("/cache/clear")
+def clear_cache():
+    pow_int.cache_clear()
+    fibonacci_n.cache_clear()
+    factorial.cache_clear()
+    return {"detail": "All caches cleared"}
 
 # Returns a welcome message.
 # @admin_router.get("/")

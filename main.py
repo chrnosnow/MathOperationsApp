@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
         else:
             logger.info("Admin user and role already present; no changes made.")
         logger.info("Prometheus metrics available at http://localhost:9090")
+        logger.info("Swagger UI available at http://localhost:8080/docs")
     except Exception as e:
         logger.exception("Error creating database tables.")
         raise e
@@ -52,4 +53,4 @@ app.include_router(metrics_router)  # metrics endpoint
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8080, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
