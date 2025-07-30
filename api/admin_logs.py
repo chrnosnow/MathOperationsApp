@@ -14,6 +14,7 @@ admin_router = APIRouter(
 
 # ──────────────────────── CACHE INSPECTION ENDPOINTS ─────────────────────────
 
+
 # View current cache stats for each math function
 @admin_router.get("/cache")
 def cache_insight():
