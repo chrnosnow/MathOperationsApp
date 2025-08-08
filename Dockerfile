@@ -10,11 +10,18 @@ COPY . /app
 # Install OS dependencies (optional but useful)
 RUN apt-get update && apt-get install -y build-essential
 
+# Install OS dependencies, including netcat (the watcher of ports)
+RUN apt-get update && apt-get install -y build-essential netcat-openbsd
+
 # Copy requirements file and install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Add wait-for-kafka script
+COPY wait-for-kafka.sh /app/wait-for-kafka.sh
+RUN chmod +x /app/wait-for-kafka.sh
 
 # Expose FastAPI port
 EXPOSE 8080
 
 # Start the FastAPI app with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["/app/wait-for-kafka.sh", "kafka:9092", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
