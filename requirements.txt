@@ -13,6 +13,9 @@ isort>=5.13
 ruff>=0.4
 flake8>=7.0
 
+kafka-python
+aiokafka
+
 # user/auth
 python-dotenv>=1.0
 python-jose[cryptography]>=3.3

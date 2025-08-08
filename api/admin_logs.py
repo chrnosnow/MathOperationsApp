@@ -7,6 +7,8 @@ from schemas.log import RequestLog, RequestLogCreate
 
 from services.math_service import pow_int, fibonacci_n, factorial
 
+from kafka_services.consumer import message_store
+
 # Apply dependency at router-level because all log routes are admin-only
 admin_router = APIRouter(
     prefix="/logs", tags=["logs"], dependencies=[Depends(require_admin)]
@@ -32,6 +34,11 @@ def clear_cache():
     fibonacci_n.cache_clear()
     factorial.cache_clear()
     return {"detail": "All caches cleared"}
+
+
+@admin_router.get("/kafka/messages")
+def get_kafka_messages():
+    return {"messages": message_store[-50:]}  # return last 50 messages
 
 # Returns a welcome message.
 # @admin_router.get("/")
