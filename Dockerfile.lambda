@@ -1,12 +1,15 @@
 # ---- Base image: AWS publishes one per Python minor version ----
 FROM public.ecr.aws/lambda/python:3.12
 
-# ---- Install Python depsawscl ----
+# ---- Install Python deps ----
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Use --no-cache-dir to keep the image size down
+RUN pip install --no-cache-dir -r requirements.txt
 
 # ---- Copy source code into the image ----
+# This copies everything from the project root into the container's /var/task/ directory
 COPY . .
 
 # ---- Tell Lambda which handler to execute ----
+# Format is "python_file_name.handler_variable_name"
 CMD ["lambda_handler.handler"]
