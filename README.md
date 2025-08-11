@@ -39,6 +39,27 @@ ___
 
 ---
 
+## 📨 Kafka Integration
+
+Kafka is used in this project to handle asynchronous messaging between the math service and logging mechanisms. 
+When a user makes a request to the Fibonacci, power, or factorial endpoints, the request details are serialized and sent to Kafka topics (`fibonacci-requests`, `pow-requests`, `factorial-requests`) via a producer. 
+A dedicated consumer asynchronously listens on these topics and processes messages in the background, decoupling request handling from background logging or other processing.
+This setup improves responsiveness and enables scalable event-driven data flow.
+
+---
+
+![Kafka UI overview](docs/images/kafka-ui.jpeg)
+
+---
+
+### Apache Kafka UI
+
+To make Kafka operations easier to observe and manage, the [Kafka UI](https://github.com/provectus/kafka-ui) is included in the Docker Compose setup. 
+This interface allows you to visually inspect available topics, see real-time messages, monitor consumer groups, check broker status, and even manually publish messages for testing. 
+It's available by default at `http://localhost:8081` when the stack is running via Docker.
+
+---
+
 ## ✨ Features
 
 * **LRU-cached math functions** → logarithmic power, fast-doubling Fibonacci, C-backed factorial.
@@ -47,6 +68,7 @@ ___
   inserts a default admin.
 * **Prometheus metrics** – built-in `/metrics` endpoint (Prometheus text format) for request count, latency, and
   cache-hit ratios; ready to scrape.
+* **Kafka-based messaging** → all math requests are published to Kafka topics and consumed asynchronously.
 * **Pre-commit quality gate** → Black ⇢ isort ⇢ Ruff ⇢ Flake8.
 * **Fully async test-suite** → Pytest suite with isolated temporary database fixture.
 
@@ -70,7 +92,7 @@ SQLite file requests.db is created in the project root; it’s already .gitignor
 
 ---
 
-## 📦 Docker (optional)
+## 📦 Docker 
 
 This project can be run in a Docker container for easy deployment and isolation. To run the API in a Docker container,
 you can build and run it with the following commands:
@@ -123,7 +145,7 @@ docker push $ACCOUNT.dkr.ecr.$REGION.amazonaws.com/math-api-lambda:latest
 
 ## 👥 Contributors
 
-| Name               | Key areas                                                                                                                              |
-|--------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| **Irina Morosanu** | • Core FastAPI app & routing<br> • Auth & role-based access control<br>• Math algorithms & caching<br>• Pre-commit config<br>• Testing |
-| **Alexandru Baba** | • Project setup<br>• Core FastAPI app & routing<br> • Prometheus `/metrics` integration<br>• Containerization<br>• Testing             |
+| Name               | Key areas                                                                                                                                          |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Irina Morosanu** | • Core FastAPI app & routing<br> • Auth & role-based access control<br>• Math algorithms & caching<br>• Pre-commit config<br>• Testing             |
+| **Alexandru Baba** | • Project setup<br>• Core FastAPI app & routing<br> • Prometheus `/metrics` integration<br>• Kafka integration<br> • Containerization<br>• Testing |
