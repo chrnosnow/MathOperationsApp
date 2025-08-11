@@ -18,5 +18,9 @@ venv/
 .DS_Store
 Thumbs.db
 
-#database
+# Database
 requests.db
+*.db
+
+# AWS credentials
+.aws/

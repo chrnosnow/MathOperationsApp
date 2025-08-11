@@ -22,11 +22,14 @@ speed, built-in validation, and ready-made documentation with almost no boilerpl
 
 ## 📈 Prometheus
 
-Prometheus is an open-source metrics monitoring and alerting toolkit that scrapes time-series data from configured targets (like this app’s /metrics endpoint) and stores it for querying, alerting, and dashboarding.
-You may also add custom metrics (e.g., math_calls_total) to track specific function calls, sources (cache vs compute), or errors.
-To query Prometheus se expressions like up, http_requests_total, math_calls_total. 
+Prometheus is an open-source metrics monitoring and alerting toolkit that scrapes time-series data from configured
+targets (like this app’s /metrics endpoint) and stores it for querying, alerting, and dashboarding.
+You may also add custom metrics (e.g., math_calls_total) to track specific function calls, sources (cache vs compute),
+or errors.
+To query Prometheus se expressions like up, http_requests_total, math_calls_total.
 
-⚠️ Note: The Prometheus UI is only accessible when the application is started via Docker Compose. Prometheus must be running as a separate service to collect and display metrics.
+⚠️ Note: The Prometheus UI is only accessible when the application is started via Docker Compose. Prometheus must be
+running as a separate service to collect and display metrics.
 
 ___
 
@@ -79,6 +82,42 @@ docker-compose up --build : Builds and starts all services defined in the docker
 ```
 
 Or use Rancher Desktop / Kubernetes with the provided k8s/ manifests (Deployment, Service, Secret).
+
+---
+
+## 🚀 Serverless deployment (AWS Lambda + API Gateway)
+
+> These steps assume you have the AWS CLI configured and Docker installed.
+
+1. **Build & push the image**
+
+```bash
+# in project root, build the image
+docker build -f Dockerfile.lambda -t math-api-lambda .
+
+# login to your ECR
+REGION=us-east-1                       
+ACCOUNT=123456789012                   # your AWS account ID
+
+aws ecr get-login-password --region $REGION \
+| docker login --username AWS --password-stdin \
+  $ACCOUNT.dkr.ecr.$REGION.amazonaws.com
+
+# (first time) create repository
+aws ecr create-repository --repository-name math-api-lambda --region $REGION
+
+# tag & push
+docker tag math-api-lambda:latest \
+  $ACCOUNT.dkr.ecr.$REGION.amazonaws.com/math-api-lambda:latest
+
+docker push $ACCOUNT.dkr.ecr.$REGION.amazonaws.com/math-api-lambda:latest
+```
+
+2. **Create the function**
+
+- Console → Lambda → Create function → Container image
+- Image URI = the ECR URL above
+- Handler auto-fills to `lambda_handler.handler`.
 
 ---
 
