@@ -1,15 +1,32 @@
-from kafka_services.producer_instance import producer
-import logging
+from aiokafka import AIOKafkaProducer
+import json
 
-logger = logging.getLogger("uvicorn.error")
+producer = None  # To be initialized on startup
 
-async def send_request_to_kafka(data: dict, topic: str = "math-requests"):
+
+async def init_kafka_producer():
+    global producer
+    producer = AIOKafkaProducer(
+        bootstrap_servers='kafka:9092',
+        value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+    )
+    await producer.start()
+    print(" Kafka producer is ready")
+
+
+async def stop_kafka_producer():
+    if producer:
+        await producer.stop()
+        print(" Kafka producer stopped")
+
+
+async def send_request_to_kafka(data: dict, topic: str):
     if not producer:
-        logger.warning(" Kafka producer is not initialized.")
-        return
+        raise RuntimeError("Producer hath not been initialized!")
 
     try:
+        print(f" Sending to topic '{topic}': {data}")
         await producer.send_and_wait(topic, data)
-        logger.info(f" Sent Kafka message to '{topic}': {data}")
+        print(" Message delivered to Kafka")
     except Exception as e:
-        logger.error(f" Failed to send Kafka message to '{topic}': {e}")
+        print(f" Kafka send error: {e}")
