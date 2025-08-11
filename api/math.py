@@ -41,7 +41,6 @@ async def compute_power(
 
     await send_request_to_kafka(data, topic="pow-requests")
 
-
     session.add(log_entry)
     session.commit()
     session.refresh(log_entry)
