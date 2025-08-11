@@ -7,8 +7,9 @@ __pycache__/
 
 # Virtual environment
 venv/
-..env/
-..env
+.env/
+.env
+.venv/
 
 # PyCharm
 .idea/
