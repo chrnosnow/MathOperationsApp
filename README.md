@@ -1,8 +1,8 @@
 # Math Operations API
 
-A lightweight FastAPI microservice that exposes three math utilities - integer power, Fibonacci, and factorial - while
-recording every call to a SQLite database. Admin-role users can manage the log table; regular users only
-call math endpoints. JWT tokens and role links manage access.
+A lightweight FastAPI microservice that exposes three math utilities - integer power, Fibonacci, and factorial. Every
+request is persisted to SQLite database and published to a Kafka topic. Admin-role users can manage the log table;
+regular users only call math endpoints. JWT tokens and role links manage access. Prometheus scrapes builtin `/metric`.
 
 ---
 
