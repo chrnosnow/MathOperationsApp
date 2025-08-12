@@ -35,8 +35,8 @@ fi
 
 ### --- Configuration (from .env and dynamic) --- ###
 REGION="$AWS_DEFAULT_REGION"
-ECR_REPO_NAME="math-operations-api-repo"   # Differentiated: ECR Repository Name
-LAMBDA_FUNCTION_NAME="math-operations-api" # Differentiated: Lambda Function Name
+ECR_REPO_NAME="math-operations-api-repo"   # ECR Repository Name
+LAMBDA_FUNCTION_NAME="math-operations-api" # Lambda Function Name
 IMAGE_TAG="latest"
 
 echo "➡️ Resolving AWS Account ID..."

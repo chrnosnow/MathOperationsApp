@@ -9,7 +9,7 @@ Two ways to run this app:
 1. **Locally** with Docker Compose, which includes Kafka, Prometheus, and a Kafka UI for easy management.
 2. **Serverless** on AWS Lambda with API Gateway, using a Docker image and the Mangum adapter to handle
    requests. This allows you to run the same code in a fully managed environment without worrying about
-   server maintenance.
+   server maintenance. Doesn't include Kafka nor Prometheus.
 
 ---
 
@@ -124,12 +124,13 @@ SQLite file `requests.db` is created in the project root; it’s already .gitign
 
 ## 🚀 Serverless deployment (AWS Lambda + API Gateway)
 
+> You do not need Kafka or Prometheus in Lambda—those run locally only.
 > These steps assume you have the AWS CLI configured and Docker installed.
 
 We keep a second image (`Dockerfile.lambda`) and a minimal wrapper (`lambda_handler.py` with Mangum) so the same code
 runs in AWS Lambda.
 
-### 1. One-time bootstrap script
+### 1. Build and push the Lambda Docker image
 
 *Uses environment variables from `.env`.*
 
@@ -145,7 +146,14 @@ The script will:
 2. create (if needed) + push to an ECR (Elastic Container Registry) repo in AWS
 3. create or update an AWS Lambda function called `math-api-lambda`
 
-### 2. Finish the setup in the AWS console
+### 2. Verify AWS credentials (inside your venv)
+
+```bash
+aws sts get-caller-identity
+
+```
+
+### 3. Finish the setup in the AWS console
 
 1. **Open the Lambda function**
 
@@ -154,7 +162,7 @@ The script will:
 2. **Add three environment variables**
 
    | Key | Example value | Needed for                                 |
-                                                                                                               |-----|---------------|--------------------------------------------|
+                                                                                                                                          |-----|---------------|--------------------------------------------|
    | `SECRET_KEY` | `please-change-me` | JWT signing                                |
    | `DATABASE_URL` | `sqlite:///tmp/requests.db` | where to store the log table |
    | `KAFKA_BOOTSTRAP` <br>*optional* | `broker.example.com:9092` | publish to Kafka              |
@@ -201,7 +209,7 @@ curl "$API/math/fib?n=7" \
 
 ## 👥 Contributors
 
-| Name               | Key areas                                                                                                                                            |
-|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Irina Morosanu** | • Core FastAPI app & routing<br> • Auth & role-based access control<br>• Math algorithms & caching<br>• Pre-commit config<br>• Testing• Lambda image |
-| **Alexandru Baba** | • Project setup<br>• Core FastAPI app & routing<br> • Prometheus `/metrics` integration<br>• Kafka integration<br> • Containerization<br>• Testing   |
+| Name               | Key areas                                                                                                                                                            |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Irina Morosanu** | • Core FastAPI app & routing<br> • Auth & role-based access control<br>• Math algorithms & caching<br>• Pre-commit config<br>• Testing<br>• Lambda image             |
+| **Alexandru Baba** | • Project setup<br>• Core FastAPI app & routing<br> • Prometheus `/metrics` integration<br>• Kafka integration<br> • Containerization<br>• Testing<br>• Lambda image |

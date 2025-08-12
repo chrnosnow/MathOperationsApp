@@ -1,7 +1,7 @@
-import logging
-from contextlib import asynccontextmanager
-
 import asyncio
+import logging
+import os
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -11,11 +11,9 @@ from api.auth import auth_router
 from api.math import math_router
 from core.startup_seed import seed_admin
 from db import create_db_and_tables
+from kafka_services import producer
 from kafka_services.consumer import consume_kafka
 from metrics.metrics import metrics_router
-
-from kafka_services import producer
-
 
 # test for database connection and creation
 # to run use python -m uvicorn main:app --reload --port 8080
@@ -41,12 +39,15 @@ async def lifespan(app: FastAPI):
         logger.info("Prometheus metrics available at http://localhost:9090")
         logger.info("Swagger UI available at http://localhost:8080/docs")
 
-        # Start the Kafka consumer thread
-        asyncio.create_task(consume_kafka())
-        logger.info(" Kafka async consumer task started")
-
-        # Start the Kafka producer
-        await producer.init_kafka_producer()
+        # Check if running in a serverless environment (Kafka disabled)
+        if os.getenv("SERVERLESS") != "TRUE":
+            # Start the Kafka consumer thread
+            asyncio.create_task(consume_kafka())
+            logger.info(" Kafka async consumer task started")
+            # Start the Kafka producer
+            await producer.init_kafka_producer()
+        else:
+            logger.info(" Kafka disabled in this environment")
 
     except Exception as e:
         logger.exception("Error creating database tables.")

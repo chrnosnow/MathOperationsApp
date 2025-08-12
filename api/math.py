@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -6,10 +7,9 @@ from sqlmodel import Session
 from db import get_session
 from deps import get_current_user
 from exceptions.exceptions import InvalidInputErr, OverflowErr
+from kafka_services.producer import send_request_to_kafka
 from schemas.log import RequestLog
 from services.math_service import factorial, fibonacci_n, pow_int
-
-from kafka_services.producer import send_request_to_kafka
 
 # Create a new API router for math-related endpoints
 math_router = APIRouter(
@@ -36,10 +36,11 @@ async def compute_power(
         timestamp=datetime.now(timezone.utc),
     )
 
-    data = log_entry.model_dump(mode='json')
+    data = log_entry.model_dump(mode="json")
     data["status"] = "received"
 
-    await send_request_to_kafka(data, topic="pow-requests")
+    if os.getenv("SERVERLESS") != "TRUE":
+        await send_request_to_kafka(data, topic="pow-requests")
 
     session.add(log_entry)
     session.commit()
@@ -67,10 +68,11 @@ async def compute_fibonacci(
         timestamp=datetime.now(timezone.utc),
     )
 
-    data = log_entry.model_dump(mode='json')
+    data = log_entry.model_dump(mode="json")
     data["status"] = "received"
 
-    await send_request_to_kafka(data, topic="fibonacci-requests")
+    if os.getenv("SERVERLESS") != "TRUE":
+        await send_request_to_kafka(data, topic="fibonacci-requests")
 
     session.add(log_entry)
     session.commit()
@@ -100,9 +102,11 @@ async def compute_factorial(
         timestamp=datetime.now(timezone.utc),
     )
 
-    data = log_entry.model_dump(mode='json')
+    data = log_entry.model_dump(mode="json")
     data["status"] = "received"
-    await send_request_to_kafka(data, topic="factorial-requests")
+
+    if os.getenv("SERVERLESS") != "TRUE":
+        await send_request_to_kafka(data, topic="factorial-requests")
 
     session.add(log_entry)
     session.commit()
