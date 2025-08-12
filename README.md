@@ -124,7 +124,7 @@ SQLite file `requests.db` is created in the project root; it’s already .gitign
 
 ## 🚀 Serverless deployment (AWS Lambda + API Gateway)
 
-> You do not need Kafka or Prometheus in Lambda—those run locally only.
+> You do not need Kafka or Prometheus in Lambda - those run locally only.
 > These steps assume you have the AWS CLI configured and Docker installed.
 
 We keep a second image (`Dockerfile.lambda`) and a minimal wrapper (`lambda_handler.py` with Mangum) so the same code
@@ -162,7 +162,7 @@ aws sts get-caller-identity
 2. **Add three environment variables**
 
    | Key | Example value | Needed for                                 |
-                                                                                                                                          |-----|---------------|--------------------------------------------|
+                                                                                                                                             |-----|---------------|--------------------------------------------|
    | `SECRET_KEY` | `please-change-me` | JWT signing                                |
    | `DATABASE_URL` | `sqlite:///tmp/requests.db` | where to store the log table |
    | `KAFKA_BOOTSTRAP` <br>*optional* | `broker.example.com:9092` | publish to Kafka              |
